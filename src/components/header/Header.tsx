@@ -1,7 +1,8 @@
 "use client"
 
 import React from 'react'
-import Shabadavali from '@/assets/icons/Shabadavali'
+import Shabadavali from '@/icons/Shabadavali'
+import Image from 'next/image';
 import CONSTANTS from '@/constants';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
@@ -32,13 +33,13 @@ export default function Header({...props}: PropTypes) {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#31D95E] opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-[#31D95E]"></span>
                 </span>
-                <img src='/icons/bell.svg' className={`h-4 w-4`} />
+                <Image height={4} width={4} src='/icons/bell.svg' className={`h-4 w-4`} alt='notifications' />
               </div>
             </li>
             <li>
               <div className={`flex bg-white h-10 w-auto rounded-full shadow items-center justify-evenly gap-2 p-1`}>
                 <span className="text-[1.125rem] pl-2">{CONSTANTS.NUM_COINS}</span>
-                <img src='/icons/coin.svg' className={`h-8 w-8`} />
+                <Image height={8} width={8} src='/icons/coin.svg' className={`h-8 w-8`} alt='coin'/>
               </div>
             </li>
             <li>
@@ -47,7 +48,7 @@ export default function Header({...props}: PropTypes) {
                   className="outline-none focus:outline-none px-3 py-1 flex items-center min-w-32"
                 >
                   <div className={`flex bg-white h-10 w-auto rounded-full shadow items-center justify-evenly gap-2 p-1`}>
-                    <img src='/icons/profile.svg' className={`h-8 w-8`} />
+                    <Image height={100} width={100} src='/icons/profile.svg' className={`h-8 w-8`} alt='profile' />
                   </div>
                   <span>
                     <FontAwesomeIcon icon={faChevronDown} className="w-3 h-3 fill-current transform group-hover:-rotate-180 transition duration-150 ease-in-out" />

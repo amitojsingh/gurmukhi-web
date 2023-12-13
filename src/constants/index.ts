@@ -1,13 +1,18 @@
 const CONSTANTS = {
+  ALL_WORDS: 'allWords',
+  ANTONYM: 'antonym',
+  ANTONYMS: 'Antonyms',
   APP_TITLE: 'Shabadavali.',
   BACK: 'Back',
   DASHBOARD: 'Dashboard',
+  DESCRIPTION: 'Made by Khalis Foundation',
   EXAMPLES: 'Examples',
   GURFATEH_PUNJABI: 'ਵਾਹਿਗੁਰੂ ਜੀ ਕਾ ਖਾਲਸਾ ॥ ਵਾਹਿਗੁਰੂ ਜੀ ਕੀ ਫਤਿਹ ॥',
   LOGIN_INFO: `Before you start adding new words to your 
     vocabulary, we just need some information from you.`,
   NUM_COINS: 13,
   ENTER_DETAILS: 'Please enter your details',
+  LOADING: 'Loading...',
   OR: 'or',
   PROFILE: 'Profile',
   QUESTIONS: 'Questions',
@@ -18,9 +23,12 @@ const CONSTANTS = {
   SIGN_OUT: 'Sign Out',
   SIGN_UP: 'Sign Up',
   SHASHA: 'ਸ਼',
+  SYNONYM: 'synonym',
+  SYNONYMS: 'Synonyms',
+  TITLE: 'Shabadavali',
   TOTAL_NUM_QUESTIONS: 13,
   WELCOME: 'Welcome',
   WORD_NOT_FOUND: 'Word not found',
-}
+};
 
-export default CONSTANTS
+export default CONSTANTS;

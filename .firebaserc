@@ -1,0 +1,32 @@
+{
+  "projects": {
+    "default": "gurmukhi-dev",
+    "dev": "gurmukhi-dev",
+    "staging": "gurmukhi-staging",
+    "prod": "gurmukhi-5f8f5"
+  },
+  "targets": {
+    "gurmukhi-dev": {
+      "hosting": {
+        "default": [
+          "dev-shabadavali"
+        ]
+      }
+    },
+    "gurmukhi-staging": {
+      "hosting": {
+        "default": [
+          "staging-shabadavali"
+        ]
+      }
+    },
+    "gurmukhi-5f8f5": {
+      "hosting": {
+        "default": [
+          "shabadavali"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

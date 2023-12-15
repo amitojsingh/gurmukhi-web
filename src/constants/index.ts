@@ -8,6 +8,7 @@ const CONSTANTS = {
   DESCRIPTION: 'Made by Khalis Foundation',
   EXAMPLES: 'Examples',
   GURFATEH_PUNJABI: 'ਵਾਹਿਗੁਰੂ ਜੀ ਕਾ ਖਾਲਸਾ ॥ ਵਾਹਿਗੁਰੂ ਜੀ ਕੀ ਫਤਿਹ ॥',
+  SSA_PUNJABI: 'ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ',
   LOGIN_INFO: `Before you start adding new words to your 
     vocabulary, we just need some information from you.`,
   NUM_COINS: 13,
@@ -29,6 +30,11 @@ const CONSTANTS = {
   TOTAL_NUM_QUESTIONS: 13,
   WELCOME: 'Welcome',
   WORD_NOT_FOUND: 'Word not found',
+  WORDS_YOU_LEARNT: 'Words you learnt',
+  COINS_DESC: 'Total number of Nanak Coins',
+  COINS_DESC2: 'WORDS TO GO FOR YOUR NEXT COIN!!',
+  RANDOM_WORD_TITLE: 'Random word of the Day',
+  EXPLORE_WORD: 'Explore Word',
 };
 
 export default CONSTANTS;

@@ -9,20 +9,22 @@ const convertToTitleCase = (word: string) => {
 
 const addEndingPunctuation = (sentence: string, lang: string) => {
   const punctuation = lang === 'gurmukhi' ? '।' : '.';
-  return sentence.endsWith(punctuation) || sentence.endsWith('?') ? sentence : sentence + punctuation;
+  const numberOfSpaces = (sentence.match(/ /g) || []).length;
+  if (numberOfSpaces === 0 && lang === 'gurmukhi') return sentence.replace(/।/g, '');
+  return numberOfSpaces === 0 || sentence.endsWith(punctuation) || sentence.endsWith('?') ? sentence : sentence + punctuation;
 };
 
-const highlightWord = (sentence: string, lang: string, word: string) => {
+const highlightWord = (sentence: string, word: string, lang?: string) => {
   // check if word in sentence
   if (!sentence.includes(word)) {
     return sentence;
   }
   const splitSentence = sentence.split(word);
   return (
-    <span className="text-black gurmukhi">
+    <span className="text-slate-500 gurmukhi font-semibold">
       {splitSentence[0]}
-      <span className="text-black font-bold">{word}</span>
-      {addEndingPunctuation(splitSentence[1], lang)}
+      <span className="text-black">{word}</span>
+      {lang ? addEndingPunctuation(splitSentence[1], lang) : splitSentence[1] }
     </span>
   );
 };
@@ -34,7 +36,7 @@ const createSemanticDraggables = (provided: DroppableProvided, wordList: WordDat
   const heading = type === synonyms.toLowerCase() ? synonyms : antonyms;
   return (
     <div
-      className='card-bg shadow-lg rounded-lg h-72 w-80 p-4'
+      className='h-72 w-80 p-4 cardImage bg-cover bg-sky-100 bg-blend-soft-light border-2 border-sky-200 shadow-lg rounded-lg'
       ref={provided.innerRef}
       {...provided.droppableProps}>
       <h2 className='text-center text-black tracking-widest'>{heading.toUpperCase()}</h2>
@@ -48,10 +50,10 @@ const createSemanticDraggables = (provided: DroppableProvided, wordList: WordDat
               {(dragProvided, dragSnapshot) => {
                 const isDragging = dragSnapshot.isDragging ?? false;
                 const draggingOver = dragSnapshot.draggingOver ?? '';
-                let bgColor = 'bg-[#1F4860]';
+                let bgColor = 'bg-darkBlue';
                 let color = 'grey';
                 if (isDragging) {
-                  bgColor = 'bg-[#1F4860]';
+                  bgColor = 'bg-darkBlue';
                   if (draggingOver === synonyms.toLowerCase()) {
                     bgColor = 'bg-green-500';
                     color = 'green';
@@ -101,10 +103,10 @@ const getDraggedItemBackgroundColor = (dragSnapshot: DraggableStateSnapshot, wor
         if (word.type === 'synonym') return 'bg-red-500';
         break;
       default:
-        return 'bg-[#1F4860]';
+        return 'bg-darkBlue';
     }
   }
-  return 'bg-[#1F4860]';
+  return 'bg-darkBlue';
 };
 
 export { 

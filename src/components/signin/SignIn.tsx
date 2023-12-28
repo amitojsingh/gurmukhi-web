@@ -1,12 +1,48 @@
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { useUserAuth } from 'auth';
 import { ROUTES } from 'constants/routes';
 import SignUp from './SignUp';
 import InputWithIcon from '../input/InputWithIcon';
+import { SignError } from 'types';
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function SignIn() {
   const { t: text } = useTranslation();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [cpassword, setCPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState<SignError | null>(null);
+  const navigate = useNavigate();
   const [isNewUser, setIsNewUser] = useState(false);
+  const { logIn, signUp, signInWithGoogle } = useUserAuth();
+
+  const showToastMessage = (textMsg: string, error = true) => {
+    toast.success(textMsg, {
+      position: toast.POSITION.BOTTOM_RIGHT,
+      closeOnClick: true,
+      type: error ? 'error' : 'success',
+    });
+  };
+
+  useEffect(() => {
+    if (password === '' && cpassword === '') {
+      setErrorMessage(null);
+    } else if (password === cpassword && password !== '' && cpassword !== '') {
+      setErrorMessage({
+        code: 'pwd-match',
+        message: 'Passwords match',
+      });
+    } else {
+      setErrorMessage({
+        code: 'pwd-mismatch',
+        message: 'Passwords do not match',
+      });
+    }
+  }, [password, cpassword]);
+
   const signToggle = (e: FormEvent) => {
     e.preventDefault();
     const switchElement = document.getElementsByClassName('switch')[0];
@@ -19,16 +55,42 @@ export default function SignIn() {
     setIsNewUser(!isNewUser);
   };
 
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    try {
+      const username = email.split('@')[0];
+      if (isNewUser) {
+        if (password === cpassword) {
+          const success = await signUp(name, username, email, password, cpassword, showToastMessage);
+          if (success) {
+            navigate(ROUTES.DASHBOARD);
+          } 
+        } else {
+          setErrorMessage({
+            code: 'pwd-mismatch',
+            message: 'Passwords do not match',
+          });
+        }
+      } else {
+        const success = await logIn(username, password, showToastMessage);
+        if (success) {
+          navigate(ROUTES.DASHBOARD);
+        }
+      }
+    } catch (error: any) {
+      showToastMessage(error.message);
+    }
+  };
+
   const handleGoogleSignIn = async (event: React.MouseEvent) => {
     event.preventDefault();
     try {
-      // left with getting confirmation of logging to navigate to homepage
-      // const success = await signInWithGoogle();
-      // if (success) {
-      //   navigate(routes.words);
-      // }
+      const success = await signInWithGoogle();
+      if (success) {
+        navigate(ROUTES.DASHBOARD);
+      }
     } catch (error: any) {
-      console.log(error.message);
+      showToastMessage(error.message);
     }
   };
 
@@ -51,14 +113,23 @@ export default function SignIn() {
         </span>
       </div>
 
-      <form action={ROUTES.DASHBOARD} className="flex flex-col w-full gap-4 mt-4 ease-in-out duration-200 delay-100" >
+      <ToastContainer />
+
+      <form onSubmit={handleSubmit} className='flex flex-col w-full gap-4 mt-4 ease-in-out duration-200 delay-100' >
         {isNewUser ? (
-          <SignUp />
+          <SignUp
+            nameChange={setName}
+            emailChange={setEmail}
+            passwordChange={setPassword}
+            cpasswordChange={setCPassword}
+            errorMessage={errorMessage}
+            setErrorMessage={setErrorMessage}
+          />
         )
           : (
             <div className='appear-from-below'>
-              <InputWithIcon id="username" placeholder="Username" type="text" icon="user" />
-              <InputWithIcon id="signin-pwd" placeholder="Password" type="password" />
+              <InputWithIcon id="username" placeholder="Username (same as your email)" type="text" icon="user" onChange={(e) => setEmail(e.target.value)} />
+              <InputWithIcon id="spassword" placeholder="Password" type="password" onChange={(e) => setPassword(e.target.value)} />
               <button className="w-full p-4 rounded-lg bg-gradient-to-r from-brightBlue to-softBlue text-white text-lg" type='submit'>{text('SIGN_IN')}</button>
             </div>
           )

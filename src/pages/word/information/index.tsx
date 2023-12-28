@@ -132,8 +132,8 @@ export default function Information() {
             </div>
             <div className='flex items-center justify-around my-10 gap-5 w-full'>
               <div
-                className={`w-2/5 h-64 p-5 cardImage bg-cover bg-sky-100 bg-blend-soft-light border-2 border-sky-200 shadow-lg rounded-lg ${
-                  synonyms.length == 0 ? 'hidden' : ''
+                className={`card-bg shadow-lg rounded-lg w-2/5 h-64 p-5 ${
+                  (synonyms.length == 0) ? 'hidden' : ''
                 }`}
               >
                 <h2 className='text-black tracking-widest ms-2'>
@@ -155,8 +155,8 @@ export default function Information() {
                 </div>
               </div>
               <div
-                className={`w-2/5 h-64 p-5 cardImage bg-cover bg-sky-100 bg-blend-soft-light border-2 border-sky-200 shadow-lg rounded-lg ${
-                  antonyms.length == 0 ? 'hidden' : ''
+                className={`card-bg shadow-lg rounded-lg w-2/5 h-64 p-5 ${
+                  (antonyms.length == 0) ? 'hidden' : ''
                 }`}
               >
                 <h2 className='text-black tracking-widest ms-2'>

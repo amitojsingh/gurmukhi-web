@@ -1,8 +1,8 @@
 import {
   DocumentReference, collection, doc, documentId, getDoc, getDocs, query, setDoc, where,
 } from 'firebase/firestore';
-import { firestore as db } from 'firebase';
 import { UserProfile } from 'firebase/auth';
+import { firestore as db } from '../firebase';
 
 export const usersCollection = collection(db, 'users');
 
@@ -46,4 +46,13 @@ export const checkIfEmailUnique = async (email: string) => {
   const queryStatement = query(usersCollection, where('email', '==', email));
   const usersSnapshot = await getDocs(queryStatement);
   return usersSnapshot.empty;
+};
+
+export const getEmailFromUsername = async (username: string) => {
+  const queryStatement = query(usersCollection, where('username', '==', username));
+  const usersSnapshot = await getDocs(queryStatement);
+  if (!usersSnapshot.empty) {
+    return usersSnapshot.docs[0].data().email;
+  }
+  return null;
 };

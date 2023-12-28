@@ -1,30 +1,9 @@
 import React, { Suspense } from 'react';
-import {
-  Route,
-  RouterProvider,
-  createBrowserRouter,
-  createRoutesFromElements,
-} from 'react-router-dom';
 import i18n from 'i18next';
 import { initReactI18next, useTranslation } from 'react-i18next';
-import CONSTANTS from 'constants';
-import Login from 'pages/login';
-import { PAGES } from 'constants/routes';
-import Dashboard from 'pages/dashboard';
-import Profile from 'pages/profile';
-import Settings from 'pages/settings';
-import Defintion from 'pages/word/definition';
-import Examples from 'pages/word/examples';
-import RootLayout from 'pages/layout';
-import WordsPageLayout from 'pages/word/layout';
-import NotFound from 'pages/not-found';
-import Home from 'pages/page';
-import Semantics from 'pages/word/semantics';
-import Information from 'pages/word/information';
-import QuestionsPageLayout from 'pages/questions/layout';
-import Question from 'pages/questions';
-import Win from 'pages/win';
-import WinCoin from 'pages/wincoin';
+import CONSTANTS from './constants';
+import { UserAuthContextProvider } from './auth';
+import { AppRouter } from 'routes';
 import Meta from 'components/meta';
 import metaTags from 'constants/meta';
 
@@ -46,36 +25,18 @@ i18n.use(initReactI18next).init({
 function App() {
   const { t: text } = useTranslation();
   const { title, description } = metaTags.ROOT;
-  const router = createBrowserRouter(
-    createRoutesFromElements(
-      <Route path={PAGES.ROOT} element={<RootLayout />}>
-        <Route path='' element={<Home />} />
-        <Route path={PAGES.DASHBOARD} element={<Dashboard />} />
-        <Route path={PAGES.LOGIN} element={<Login />} />
-        <Route path={PAGES.PROFILE} element={<Profile />} />
-        <Route path={PAGES.SETTINGS} element={<Settings />} />
-        <Route path={PAGES.WIN} element={<Win />} />
-        <Route path={PAGES.WINCOIN} element={<WinCoin />} />
-        <Route path={PAGES.WORDS} element={<WordsPageLayout />}>
-          <Route path={PAGES.DEFINITION} element={<Defintion />} />
-          <Route path={PAGES.EXAMPLES} element={<Examples />} />
-          <Route path={PAGES.SEMANTICS} element={<Semantics />} />
-          <Route path={PAGES.INFORMATION} element={<Information />} />
-        </Route>
-        <Route path={PAGES.QUESTION} element={<QuestionsPageLayout />}>
-          <Route path={''} element={<Question />} />
-        </Route>
-        <Route path='*' element={<NotFound />} />
-      </Route>,
-    ),
-  );
+
   return (
     <Suspense fallback={<div>{text('LOADING')}</div>}>
       <div className='App'>
-        <Meta title={title} description={description} />
-        <main className='flex h-screen flex-col justify-center overflow-y-scroll bg-cover bg-scroll bg-bottom bg-no-repeat shadow-lg background-layer'>
-          <RouterProvider router={router}></RouterProvider>
-        </main>
+        <UserAuthContextProvider>
+          <div>
+            <Meta title={title} description={description} />
+            <main className='flex h-screen flex-col justify-center overflow-y-scroll bg-cover bg-scroll bg-bottom bg-no-repeat shadow-lg background-layer'>
+              <AppRouter />
+            </main>
+          </div>
+        </UserAuthContextProvider>
       </div>
     </Suspense>
   );

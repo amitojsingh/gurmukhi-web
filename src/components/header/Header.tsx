@@ -4,6 +4,7 @@ import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import Shabadavali from 'assets/icons/Shabadavali';
 import { PAGES, ROUTES } from 'constants/routes';
+import { useNavigate } from 'react-router-dom';
 
 interface PropTypes {
   loggedIn?: boolean
@@ -11,6 +12,7 @@ interface PropTypes {
 
 export default function Header({ ...props }: PropTypes) {
   const { t: text } = useTranslation();
+  const navigate = useNavigate();
   const loggedIn = props.loggedIn ?? false;
 
   return (
@@ -58,7 +60,11 @@ export default function Header({ ...props }: PropTypes) {
                 >
                   <li><a href={ROUTES.PROFILE} className='block px-3 py-2 hover:bg-gray-200'>{text('PROFILE')}</a></li>
                   <li><a href={ROUTES.SETTINGS} className='block px-3 py-2 hover:bg-gray-200'>{text('SETTINGS')}</a></li>
-                  <li><a href={ROUTES.LOGIN} className='block px-3 py-2 hover:bg-gray-200'>{text('SIGN_OUT')}</a></li>
+                  <li><button onClick={
+                    () => {
+                      navigate(ROUTES.LOG_OUT);
+                    }
+                  } className='block px-3 py-2 hover:bg-gray-200'>{text('SIGN_OUT')}</button></li>
                 </ul>
               </div>
             </li>

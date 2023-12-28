@@ -1,18 +1,18 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd';
-import { useLocation } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import Confetti from 'react-confetti';
+import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import LevelsFooter from 'components/levels-footer/LevelsFooter';
 import BackBtn from 'components/buttons/BackBtn';
-import { WordData, wordData } from 'constants/wordsData';
-import { ROUTES } from 'constants/routes';
-import { createSemanticDraggables } from 'utils/words';
+import LevelsFooter from 'components/levels-footer/LevelsFooter';
 import Meta from 'components/meta';
 import metaTags from 'constants/meta';
+import { ROUTES } from 'constants/routes';
+import { WordData, wordData } from 'constants/wordsData';
 import { showToastMessage } from 'utils';
+import { createSemanticDraggables } from 'utils/words';
 import { processWords, semanticsOnDrag, updateSemanticWordsData } from './hooks';
 
 export default function Semantics() {

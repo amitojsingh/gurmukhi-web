@@ -6,6 +6,7 @@ const CONSTANTS = {
   BACK: 'Back',
   DASHBOARD: 'Dashboard',
   DESCRIPTION: 'Made by Khalis Foundation',
+  EMAIL_VERIFICATION_SENT: 'Email verification sent to your inbox!',
   ENTER_DETAILS: 'Please enter your details',
   EXAMPLES: 'Examples',
   GURMUKHI: 'gurmukhi',
@@ -16,7 +17,9 @@ const CONSTANTS = {
   LOGIN_INFO: `Before you start adding new words to your 
     vocabulary, we just need some information from you.`,
   NUM_COINS: 13,
+  LOGGING_OUT: 'Logging out...',
   OR: 'or',
+  PASSWORDS_DONT_MATCH: 'Passwords do not match!',
   PROFILE: 'Profile',
   QUESTIONS: 'Questions',
   QUESTIONS_TO_GO: 'QUESTIONS TO GO FOR YOUR NEXT NANAK COIN!!',

@@ -1,11 +1,11 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import LevelsFooter from 'components/levels-footer/LevelsFooter';
 import BackBtn from 'components/buttons/BackBtn';
 import { wordData } from 'constants/wordsData';
-import { useLocation } from 'react-router-dom';
 import { ROUTES } from 'constants/routes';
 import { highlightWord } from 'utils/words';
-import { useTranslation } from 'react-i18next';
 import Meta from 'components/meta';
 import metaTags from 'constants/meta';
 

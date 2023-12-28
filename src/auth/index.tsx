@@ -7,26 +7,40 @@ import {
   sendEmailVerification,
   signInWithPopup,
   GoogleAuthProvider,
+  sendPasswordResetEmail,
 } from 'firebase/auth';
 import {
   Timestamp, doc, setDoc, // query, where, documentId, getDocs,
 } from 'firebase/firestore';
-import { auth, firestore } from 'firebase';
-import { checkUser, getUser } from 'utils/users';
+import { useTranslation } from 'react-i18next';
+import { auth, firestore } from '../firebase';
+import { checkIfUsernameUnique, checkUser, getEmailFromUsername, getUser } from 'utils/users';
 import { firebaseErrorCodes as errors } from 'constants/errors';
 import roles from 'constants/roles';
-import { useTranslation } from 'react-i18next';
 
-const userAuthContext = createContext<any>(null);
+const UserAuthContext = createContext<any>(null);
 
 export const UserAuthContextProvider = ({ children }: { children:ReactElement }) => {
   const [user, setUser] = useState({});
   const { t: text } = useTranslation();
 
-  const logIn = (
-    email: string,
+  const logIn = async (
+    username: string,
     password: string,
-  ) => signInWithEmailAndPassword(auth, email, password);
+    showToastMessage: (text: string, error?: boolean) => void,
+  ) => getEmailFromUsername(username).then((email) => {
+    try {
+      if (email) return signInWithEmailAndPassword(auth, email, password);
+      return null;
+    } catch (error: any) {
+      if (Object.keys(errors).includes(error.code)) {
+        console.log(error.code);
+        console.log(errors[error.code]);
+        showToastMessage(errors[error.code]);
+      }
+      return null;
+    }
+  });
 
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
@@ -58,13 +72,20 @@ export const UserAuthContextProvider = ({ children }: { children:ReactElement })
 
   const signUp = async (
     name: string,
+    username: string,
     email: string,
     password: string,
     confirmPassword: string,
+    showToastMessage: (text: string, error?: boolean) => void,
   ) => {
     try {
       if (password !== confirmPassword) {
-        alert(text('PASSWORDS_DONT_MATCH'));
+        showToastMessage(text('PASSWORDS_DONT_MATCH'));
+        return false;
+      }
+      const found = checkIfUsernameUnique(username);
+      if (!found) {
+        showToastMessage(text('USERNAME_TAKEN'));
         return false;
       }
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -75,6 +96,7 @@ export const UserAuthContextProvider = ({ children }: { children:ReactElement })
         name,
         role: roles.student,
         email,
+        username,
         displayName: displayName ?? name,
         created_at: Timestamp.now(),
         updated_at: Timestamp.now(),
@@ -82,18 +104,20 @@ export const UserAuthContextProvider = ({ children }: { children:ReactElement })
       setUser(userData);
 
       sendEmailVerification(auth.currentUser ?? userData).then(() => {
-        alert(text('EMAIL_VERIFICATION_SENT'));
+        showToastMessage(text('EMAIL_VERIFICATION_SENT'), false);
       });
       return true;
     } catch (error: any) {
       if (Object.keys(errors).includes(error.code)) {
-        alert(errors[error.code]);
+        showToastMessage(errors[error.code]);
       }
       return false;
     }
   };
 
   const logOut = () => signOut(auth);
+
+  const resetPassword = (email: string) => sendPasswordResetEmail(auth, email);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentuser: any) => {
@@ -121,13 +145,13 @@ export const UserAuthContextProvider = ({ children }: { children:ReactElement })
   }, []);
 
   return (
-    <userAuthContext.Provider value={{
-      user, logIn, signUp, logOut, signInWithGoogle,
+    <UserAuthContext.Provider value={{
+      user, logIn, signUp, logOut, signInWithGoogle, resetPassword,
     }}
     >
       {children}
-    </userAuthContext.Provider>
+    </UserAuthContext.Provider>
   );
 };
 
-export const useUserAuth = () => useContext(userAuthContext);
+export const useUserAuth = () => useContext(UserAuthContext);

@@ -15,12 +15,11 @@ interface SignUpProps {
 export default function SignUp({ ...props }: SignUpProps) {
   const { t: text } = useTranslation();
 
-  const getPasswordBorderColor = () => {
-    if (!!props.errorMessage && props.errorMessage.code == 'pwd-mismatch') {
-      return 'red';
-    }
-    if (!!props.errorMessage && props.errorMessage.code == 'pwd-match') {
-      return 'brightGreen';
+  const getErrorColor = () => {
+    if (!!props.errorMessage && props.errorMessage.code == 'error') {
+      return text('RED');
+    } else {
+      return text('GRAY');
     }
   };
 
@@ -28,7 +27,7 @@ export default function SignUp({ ...props }: SignUpProps) {
     <div className='appear-from-below'>
       <InputWithIcon
         id='name'
-        placeholder='Name'
+        placeholder={text('NAME')}
         type='text'
         icon='name'
         onChange={
@@ -37,7 +36,7 @@ export default function SignUp({ ...props }: SignUpProps) {
       />
       <InputWithIcon
         id='email'
-        placeholder='Email'
+        placeholder={text('EMAIL')}
         type='email'
         icon='email'
         onChange={
@@ -46,23 +45,23 @@ export default function SignUp({ ...props }: SignUpProps) {
       />
       <InputWithIcon
         id='password'
-        placeholder='Password'
+        placeholder={text('PASSWORD')}
         type='password'
-        border={getPasswordBorderColor()}
+        border={getErrorColor() ?? text('RED')}
         onChange={
           (event: React.ChangeEvent<HTMLInputElement>) =>  props.passwordChange(event.target.value)
         }
       />
       <InputWithIcon
         id='cpassword'
-        placeholder='Confirm Password'
+        placeholder={text('CONFIRM_PASSWORD')}
         type='password'
-        border={getPasswordBorderColor()}
+        border={getErrorColor()}
         onChange={
           (event: React.ChangeEvent<HTMLInputElement>) =>  props.cpasswordChange(event.target.value)
         }
       />
-      {props.errorMessage && <div className={`text-${getPasswordBorderColor()}-500 text-sm`}>{props.errorMessage.message}</div>}
+      {props.errorMessage && <div className={'text-red-500 text-sm'}>{props.errorMessage.message}</div>}
       <button type='submit' className='w-full p-4 rounded-lg bg-gradient-to-r from-brightBlue to-softBlue text-white text-lg'>{text('SIGN_UP')}</button>
     </div>
   );

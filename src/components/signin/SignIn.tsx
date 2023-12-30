@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useUserAuth } from 'auth';
@@ -27,22 +27,6 @@ export default function SignIn() {
     });
   };
 
-  useEffect(() => {
-    if (password === '' && cpassword === '') {
-      setErrorMessage(null);
-    } else if (password === cpassword && password !== '' && cpassword !== '') {
-      setErrorMessage({
-        code: 'pwd-match',
-        message: 'Passwords match',
-      });
-    } else {
-      setErrorMessage({
-        code: 'pwd-mismatch',
-        message: 'Passwords do not match',
-      });
-    }
-  }, [password, cpassword]);
-
   const signToggle = (e: FormEvent) => {
     e.preventDefault();
     const switchElement = document.getElementsByClassName('switch')[0];
@@ -59,7 +43,46 @@ export default function SignIn() {
     event.preventDefault();
     try {
       const username = email.split('@')[0];
+      let valid = true;
+      if (!email.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)) {
+        valid = false;
+        setErrorMessage({
+          code: text('ERROR'),
+          message: text('ENTER_VALID_EMAIL'),
+        });
+      } else if (!password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/)) {
+        valid = false;
+        setErrorMessage({
+          code: text('ERROR'),
+          message: text('ERROR_PWD'),
+        });
+      }
+
       if (isNewUser) {
+        if (
+          password !== cpassword
+          && password !== ''
+          && cpassword !== ''
+        ) {
+          valid = false;
+          setErrorMessage({
+            code: text('ERROR'),
+            message: text('PASSWORDS_DONT_MATCH'),
+          });
+        }
+
+        if (name === '' || username == '' || email === '' || password === '') {
+          valid = false;
+          setErrorMessage({
+            code: text('ERROR'),
+            message: text('FILL_ALL_FIELDS'),
+          });
+        }
+
+        if (!valid) {
+          return;
+        }
+
         if (password === cpassword) {
           const success = await signUp(name, username, email, password, cpassword, showToastMessage);
           if (success) {
@@ -67,12 +90,24 @@ export default function SignIn() {
           } 
         } else {
           setErrorMessage({
-            code: 'pwd-mismatch',
-            message: 'Passwords do not match',
+            code: text('ERROR'),
+            message: text('PASSWORDS_DONT_MATCH'),
           });
         }
       } else {
-        const success = await logIn(username, password, showToastMessage);
+        if (email === '' || password === '') {
+          valid = false;
+          setErrorMessage({
+            code: text('ERROR'),
+            message: text('FILL_ALL_FIELDS'),
+          });
+        }
+        
+        if (!valid) {
+          return;
+        }
+
+        const success = await logIn(email, password, showToastMessage);
         if (success) {
           navigate(ROUTES.DASHBOARD);
         }
@@ -85,7 +120,7 @@ export default function SignIn() {
   const handleGoogleSignIn = async (event: React.MouseEvent) => {
     event.preventDefault();
     try {
-      const success = await signInWithGoogle();
+      const success = await signInWithGoogle(showToastMessage);
       if (success) {
         navigate(ROUTES.DASHBOARD);
       }
@@ -128,8 +163,9 @@ export default function SignIn() {
         )
           : (
             <div className='appear-from-below'>
-              <InputWithIcon id="username" placeholder="Username (same as your email)" type="text" icon="user" onChange={(e) => setEmail(e.target.value)} />
-              <InputWithIcon id="spassword" placeholder="Password" type="password" onChange={(e) => setPassword(e.target.value)} />
+              <InputWithIcon id="username" placeholder={text('EMAIL')} type="text" icon="user" onChange={(e) => setEmail(e.target.value)} />
+              <InputWithIcon id="spassword" placeholder={text('PASSWORD')} type="password" onChange={(e) => setPassword(e.target.value)} />
+              {errorMessage && <div className={'text-red-500 text-sm'}>{errorMessage.message}</div>}
               <button className="w-full p-4 rounded-lg bg-gradient-to-r from-brightBlue to-softBlue text-white text-lg" type='submit'>{text('SIGN_IN')}</button>
             </div>
           )

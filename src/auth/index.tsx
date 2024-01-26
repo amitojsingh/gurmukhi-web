@@ -97,8 +97,8 @@ export const UserAuthContextProvider = ({
         showToastMessage(text('PASSWORDS_DONT_MATCH'));
         return false;
       }
-      const found = checkIfUsernameUnique(username);
-      if (!found) {
+      const unique = checkIfUsernameUnique(username);
+      if (!unique) {
         showToastMessage(text('USERNAME_TAKEN'));
         return false;
       }
@@ -147,18 +147,23 @@ export const UserAuthContextProvider = ({
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentuser: any) => {
       if (currentuser !== null) {
-        const { uid, email } = currentuser;
+        const { uid, email, emailVerified, metadata } = currentuser;
         getUser(email ?? '', uid).then((data) => {
           const usr = {
-            user,
+            user: currentuser,
             uid,
+            name: data?.name,
             coins: data?.coins,
             wordsLearnt: data?.wordsLearnt,
             progress: data?.progress,
             email: data?.email,
+            emailVerified: emailVerified ?? false,
             displayName: data?.displayName,
             photoURL: '',
             role: data?.role,
+            username: data?.username,
+            createdAt: metadata.creationTime,
+            lastLogInAt: metadata.lastSignInTime,
           };
           setUser(usr);
         });

@@ -79,7 +79,7 @@ export const updateNanakCoin = async (uid: string, newCoinValue: number) => {
   }
 };
 
-async function updateUserDocument(uid: string, updateData: object) {
+export async function updateUserDocument(uid: string, updateData: object) {
   try {
     const userRef = doc(usersCollection, uid);
     await updateDoc(userRef, updateData);

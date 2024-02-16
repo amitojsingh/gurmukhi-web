@@ -4,7 +4,6 @@ import { Option, QuestionData } from 'types';
 import OptionBtn from 'components/buttons/Option';
 import { highlightWord } from 'utils';
 import {
-  addQuestionToSubCollection,
   updateCurrentLevel,
   updateWordFromUser,
 } from 'database/shabadavalidb';
@@ -12,17 +11,18 @@ import TextToSpeechBtn from 'components/buttons/TextToSpeechBtn';
 import { increment } from 'store/features/currentLevelSlice';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 import { useUserAuth } from 'auth';
-import { QuestionType } from 'types/shabadavalidb';
 import ALL_CONSTANT from 'constants/constant';
 
 export default function MultipleChoiceQuestion({
   questionData,
   hasImage,
   setOptionSelected,
+  setIsCorrectOption,
 }: {
   questionData: QuestionData;
   hasImage?: boolean;
   setOptionSelected: (value: boolean) => void;
+  setIsCorrectOption: (value: boolean) => void;
 }) {
   const { t: text } = useTranslation();
   const [selectedOption, setSelectedOption] = React.useState<Option | null>(
@@ -43,6 +43,9 @@ export default function MultipleChoiceQuestion({
       if (questionData.options[questionData.answer] === selectedOption) {
         updateCurrentLevel(user.uid, currentLevel + 1);
         dispatch(increment());
+        setIsCorrectOption(true);
+      } else {
+        setIsCorrectOption(false);
       }
     }
   }, [selectedOption]);
@@ -56,23 +59,7 @@ export default function MultipleChoiceQuestion({
         questionData.id &&
         selectedOption === questionData.options[questionData.answer]
       ) {
-        const questionTypeData: QuestionType = {
-          word_id: questionData.word_id,
-          question_id: questionData.id,
-          isLearnt: questionData.options[questionData.answer] === selectedOption,
-          question: questionData.question,
-          answer: questionData.answer,
-          options: questionData.options,
-          word: questionData.word,
-        };
-        if (questionData.image) {
-          questionTypeData.image = questionData.image;
-        }
-        if (questionData.type) {
-          questionTypeData.type = questionData.type;
-        }
-        await addQuestionToSubCollection(user.uid, questionTypeData);
-        await updateWordFromUser(user.uid, questionTypeData.word_id);
+        await updateWordFromUser(user.uid, questionData.word_id);
       }
     };
     storeData();

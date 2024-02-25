@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useUserAuth } from 'auth';
+import { createWorkerFactory, useWorker } from '@shopify/react-web-worker';
 import LevelHexagon from '../levels/LevelHexagon';
 import StartQuestionBtn from '../buttons/StartQuestionBtn';
+import { getUserData } from 'database/shabadavalidb';
 
 interface Props {
   operation: string;
@@ -14,6 +17,7 @@ interface Props {
   isLoading?: boolean;
 }
 
+const createWorker = createWorkerFactory(() => import('utils/serviceWorker'));
 export default function LevelsFooter({
   operation,
   currentGamePosition,
@@ -25,12 +29,28 @@ export default function LevelsFooter({
   isLoading = false,
 }: Props) {
   const { t: text } = useTranslation();
+  const worker = useWorker(createWorker);
   const totalNumQuestions = Number(text('TOTAL_NUM_QUESTIONS'));
   const numQuestionsLeft = totalNumQuestions - currentLevel;
+  const { user } = useUserAuth();
   const footerClass =
     'flex flex-row w-full sticky inset-x-0 bottom-0 bg-white/[.1] items-center justify-between z-10 box-border' +
     (absolute ? 'absolute' : 'static');
 
+  useEffect(() => {
+    const callWorker = async () => {
+      console.log('worker is running');
+      const userData = await getUserData(user.uid);
+      if (!userData) {
+        await worker.fetchNextSessionData(user);
+        return;
+      }
+      await worker.fetchNextSessionData(userData);
+    };
+    if (currentLevel === 10 && user.uid && worker) {
+      callWorker();
+    }
+  }, [currentLevel, user, worker]);
   const getLevelType = (num: number) => {
     if (num < currentLevel) return 'completed';
     if (num === currentLevel) return 'current';

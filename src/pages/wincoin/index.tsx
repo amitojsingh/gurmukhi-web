@@ -79,7 +79,6 @@ function WinCoin() {
                   navigate,
                   user,
                   dispatch,
-                  nanakCoin,
                 )
               }
               className='bg-sky-900 text-xs text-white p-3  tracking-widest font-light '

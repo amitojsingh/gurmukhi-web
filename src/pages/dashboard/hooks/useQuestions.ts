@@ -6,23 +6,20 @@ import { getQuestionsByWordID } from 'database/default';
 import { QuestionData } from 'types';
 
 
-const getRandomQuestions = async (user: User, count: number, isLearnt: boolean) => {
+const getRandomQuestions = async (user: User, count: number, isLearnt: boolean, questionIds?: string[]) => {
   const gameArray: GameScreen[] = [];
-  const words: WordShabadavaliDB[] = await getWordsFromUser(user.uid, count, isLearnt);
+  let words: WordShabadavaliDB[] = await getWordsFromUser(user.uid, count, isLearnt);
   if (words.length === 0) {
-    return [];
+    words = await getWordsFromUser(user.uid, count, !isLearnt);
   }
   let questionsPromises;
   if (isLearnt) {
-    questionsPromises = words.map((word) => getQuestionsByWordID(word.word_id, 2, true));
+    questionsPromises = words.map((word) => getQuestionsByWordID(word.word_id, 2, true, questionIds));
   } else {
     questionsPromises = words.map((word) => getQuestionsByWordID(word.word_id, 2, true, word.questionIds));
   }
   const questionsResults: QuestionData[][] = await Promise.all(questionsPromises);
-  const questions: QuestionData[] = questionsResults.flat();
-  if (questions.length === 0) {
-    return [];
-  }
+  const questions: QuestionData[] = questionsResults.flat().sort(() => Math.random() - 0.5);
   const finalCount = Math.min(questions.length, count);
   const wordToQuestionMap = new Map<string, string[]>();
   for (let i = 0; i < finalCount; i++) {

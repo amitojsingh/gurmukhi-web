@@ -137,10 +137,10 @@ const getWordById = async (wordId: string, needExtras = false) => {
   }
 };
 
-const getRandomWord = async (uid: string) => {
+const getRandomWord = async (uid: string, notInArray: any[] = ['unknown'], includeUsed = true) => {
   try {
     const userData = await getUserData(uid);
-    const existingWordIds = userData?.wordIds || ['unknown'];
+    const existingWordIds = includeUsed ? notInArray.concat(userData?.wordIds || []) : notInArray;
 
     const batches = [];
     for (let i = 0; i < existingWordIds.length; i += 10) {
@@ -176,26 +176,24 @@ const getRandomWord = async (uid: string) => {
     }
 
     const wordId = wordData.id;
-    if (wordId) {
-      const sentences = await getDataById(
-        wordId,
-        sentencesCollection,
-        'word_id',
-        3,
-      );
-      const { synonyms, antonyms } = await getSemanticsByIds(
-        wordData.synonyms as string[],
-        wordData.antonyms as string[],
-      );
+    const sentences = await getDataById(
+      wordId,
+      sentencesCollection,
+      'word_id',
+      3,
+    );
+    const { synonyms, antonyms } = await getSemanticsByIds(
+      wordData.synonyms as string[],
+      wordData.antonyms as string[],
+    );
 
-      return {
-        ...wordData,
-        id: wordId,
-        sentences,
-        synonyms,
-        antonyms,
-      } as WordType;
-    }
+    return {
+      ...wordData,
+      id: wordId,
+      sentences,
+      synonyms,
+      antonyms,
+    } as WordType;
   } catch (error) {
     console.error('No such Document', error);
   }

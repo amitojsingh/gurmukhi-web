@@ -45,7 +45,6 @@ export const bugsnagErrorHandler = (
   }
   if (process.env.NODE_ENV === 'development') {
     console.error(errorMessage);
-    return;
   }
 
   Bugsnag.notify(new Error(errorMessage), function (event) {

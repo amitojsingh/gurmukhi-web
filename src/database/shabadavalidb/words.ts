@@ -23,6 +23,7 @@ import { bugsnagErrorHandler } from 'utils';
 const getWordCollectionRef = (uid: string) => {
   return collection(shabadavaliDB, ALL_CONSTANT.USERS, uid, ALL_CONSTANT.WORDS);
 };
+
 export const addWordsToSubCollection = async (uid: string, data: WordShabadavaliDB) => {
   try {
     const wordsCollectionRef = getWordCollectionRef(uid);
@@ -52,7 +53,7 @@ export const getWords = async (uid: string, isLearnt: boolean) => {
     }));
     return shuffleArray(documents);
   } catch (error) {
-    bugsnagErrorHandler(uid, error, 'database/shabadavalidb/words.ts/getWords', {
+    bugsnagErrorHandler(uid || 'undefined', error, 'database/shabadavalidb/words.ts/getWords', {
       isLearnt: isLearnt,
     });
     return [];

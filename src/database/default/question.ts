@@ -21,7 +21,7 @@ const getQuestions = async (wordID: string, questionIDs: string[], needOptions: 
   const filteredQuestionIDs = questionIDs.filter((id) => id !== '');
   try {
     let queryRef;
-    if (questionIDs.length === 0) {
+    if (filteredQuestionIDs.length === 0) {
       queryRef = query(questionCollection, where('word_id', '==', wordID), limit(2));
     } else {
       queryRef = query(
@@ -50,11 +50,7 @@ const getQuestions = async (wordID: string, questionIDs: string[], needOptions: 
             const options = await getOptions(questionData.options as string[]);
             return { ...questionData, options } as QuestionData;
           } catch (error) {
-            bugsnagErrorHandler(
-              error,
-              'database/default/question.ts/getOptions',
-              { questionData },
-            );
+            bugsnagErrorHandler(error, 'database/default/question.ts/getOptions', { questionData });
             return questionData;
           }
         }

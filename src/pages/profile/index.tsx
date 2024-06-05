@@ -13,6 +13,7 @@ import { showToastMessage } from 'utils';
 import { uploadImage } from 'utils/storage';
 import CONSTANTS from 'constants/constant';
 import { User } from 'types';
+import { Timestamp } from 'firebase/firestore';
 
 export default function Profile() {
   const { t: text } = useTranslation();
@@ -31,12 +32,13 @@ export default function Profile() {
   const [photoURL, setPhotoURL] = useState('/images/profile.jpeg');
   const [verifiable, setVerifiable] = useState(true);
 
-  const formattedCreatedAt = user.created_at
-    ? (typeof user.created_at === 'string' ? new Date(user.created_at) : user.created_at?.toDate()).toLocaleString()
-    : 'not defined';
-  const formattedLastLoginAt = user.lastLogInAt
-    ? (typeof user.lastLogInAt === 'string' ? new Date(user.lastLogInAt) : user.lastLogInAt?.toDate()).toLocaleString()
-    : 'not defined';
+  const formatDate = (date: string | Timestamp) => {
+    if (!date) return 'not defined';
+    return (typeof date === 'string' ? new Date(date) : date.toDate()).toLocaleString();
+  };
+
+  const formattedCreatedAt = formatDate(user.created_at);
+  const formattedLastLoginAt = formatDate(user.lastLogInAt);
 
   const getTabData = (heading: string, info: string, children?: JSX.Element) => {
     return (
@@ -88,56 +90,47 @@ export default function Profile() {
     }
   };
 
+  async function updateUserAndProfile(displayName: string) {
+    const updatedUserData = {
+      ...user,
+      displayName,
+      photoURL,
+      uname: username !== user.username ? username : user.username,
+      user: null,
+    };
+
+    await updateUserDocument(user.uid, updatedUserData);
+
+    if (currentUser) {
+      await updateProfile(currentUser, { displayName, photoURL });
+    }
+  }
+
   const handleSubmit = async () => {
     if (user && usernameError === '') {
       // check if anything has changed
-      if (
+      const isUnchanged =
         name === user.displayName &&
         username === user.username &&
         photoURL === user.user?.photoURL &&
-        !photo
-      ) {
+        photoURL === user.photoURL &&
+        !photo;
+      if (isUnchanged) {
         return;
       }
       try {
         setIsLoading(true);
         handleUpload();
+
         if (username !== user.username) {
-          const unique = checkIfUsernameUnique(username);
-          if (!unique) {
+          const isUnique = await checkIfUsernameUnique(username);
+          if (!isUnique) {
             showToastMessage(text('USERNAME_TAKEN'), toast.POSITION.TOP_CENTER, false);
             return;
-          } else {
-            await updateUserDocument(user.uid, {
-              ...user,
-              displayName: name,
-              photoURL,
-              username,
-              user: null,
-            });
-            if (currentUser) {
-              await updateProfile(currentUser, {
-                displayName: name,
-                photoURL,
-              });
-            }
-            showToastMessage(text('PROFILE_UPDATED'), toast.POSITION.TOP_CENTER, true);
           }
-        } else {
-          await updateUserDocument(user.uid, {
-            ...user,
-            displayName: name,
-            photoURL,
-            user: null,
-          });
-          if (currentUser) {
-            await updateProfile(currentUser, {
-              displayName: name,
-              photoURL,
-            });
-          }
-          showToastMessage(text('PROFILE_UPDATED'), toast.POSITION.TOP_CENTER, true);
         }
+
+        await updateUserAndProfile(name);
       } catch (error) {
         console.error(error);
         if (error instanceof Error) {
@@ -236,7 +229,7 @@ export default function Profile() {
       setUsername(user?.username || '');
       setVerifiable(!(user?.emailVerified || true));
     }
-  }, [user]);
+  }, [user.uid]);
 
   useEffect(() => {
     if (!photo) {

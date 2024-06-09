@@ -131,11 +131,10 @@ export const updateProgress = async (
 ) => {
   const progress = { currentProgress, gameSession, currentLevel };
   await updateUserDocument(uid, { progress });
-  console.log('Document is updated successfully');
 };
 
 export const updateNextSession = async (uid: string, gameArray: GameScreen[]) => {
-  await updateUserDocument(uid, { next_session: gameArray });
+  await updateUserDocument(uid, { nextSession: gameArray });
 };
 
 export const updateCurrentProgress = async (uid: string, currentProgress: number) => {
@@ -176,9 +175,8 @@ export const getUserData = async (uid: string) => {
       email: data.email,
       emailVerified: data.emailVerified,
       progress: data.progress,
-      nextSession: data.next_session,
+      nextSession: data.nextSession,
       wordIds: data.wordIds,
-      learntWordIds: data.learntWordIds,
       user: null,
       created_at: data.created_at,
       updated_at: data.updated_at,

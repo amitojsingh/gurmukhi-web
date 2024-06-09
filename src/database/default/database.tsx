@@ -191,6 +191,7 @@ const getActiveWords = async () => {
   const wordData = querySnapshot.docs.map((item) => ({ id: item.id, ...item.data() } as WordType));
   return wordData;
 };
+
 export {
   wordsCollection,
   sentencesCollection,

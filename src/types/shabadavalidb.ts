@@ -23,7 +23,6 @@ export interface User {
   };
   nextSession?: GameScreen[];
   wordIds: string[];
-  learntWordIds: string[];
   created_at: Timestamp | string;
   updated_at: Timestamp;
   lastLogInAt: Timestamp | string;
@@ -39,4 +38,15 @@ export interface WordShabadavaliDB {
   id?: string;
   lastReviewed?: Timestamp;
   questionIds: string[];
+}
+
+export interface ProgressData {
+  wordIds?: string[],
+  coins: number,
+  progress: {
+    currentLevel: number,
+    currentProgress: number,
+    gameSession: GameScreen[],
+  },
+  nextSession: GameScreen[],
 }

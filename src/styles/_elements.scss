@@ -1,0 +1,66 @@
+.blue-primary-button {
+    background-image: $sky-blue-gradient;
+    color: $white;
+    border: none;
+    border-radius: 10px;
+    padding: 16px;
+    width: 100%;
+    font-size: 1rem;
+}
+
+.white-secondary-button {
+    width: inherit;
+    padding: 16px;
+    border: 1px solid rgba($black, 0.1);
+    background-color: $white;
+    border-radius: 10px;
+}
+
+.input-with-icon {
+    width: 100%;
+    padding: 16px ;
+    border-radius: 10px;
+    border: 1px solid rgba($black, 0.1);
+    display: block;
+    box-sizing: border-box;
+    background-color: $light-gray;
+    margin: 16px 0px;
+    line-height: 1;
+}
+
+.speech-bubble {
+    position: relative;
+
+    img {
+        position: absolute;
+        bottom: 0;
+        left: -30px
+    }
+    
+    .bubble-text {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border-radius: 60px;
+        max-width: 22em;
+        height: 10em;
+        padding: 8px 32px 8px 54px;
+        background-color: $sky-blue;
+        text-align: left;
+        box-shadow: 10px 10px 30px 0 rgba(0, 0, 0, 0.1);
+        font-size: 18px;
+        color: $navy-blue;
+        line-height: 24px;
+
+        .gurmukhi {
+            font-family: 'Gurmukhi-SemiBold';
+            color: #333;
+        }
+    }
+
+    @media screen and (max-width: $large) {
+        & {
+            display: none;
+        }
+    }
+}

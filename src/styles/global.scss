@@ -1,0 +1,179 @@
+
+@import 'normalize';
+@import 'fonts';
+@import 'colors';
+@import 'breakpoints';
+@import 'elements';
+
+@import 'tailwindcss/utilities';
+
+body {
+    background-image: url('/images/background.png'), $white-blue-gradient;
+    background-attachment: fixed;
+    height: 100vh;
+    width: 100vw;
+    font-family: 'Text-Regular';
+    font-size: 18px;
+}
+
+input {
+    display: block;
+}
+
+form {
+    width: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.app-wrapper {
+    max-width: 1500px;
+    margin: auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0 24px;
+}
+
+.gurmukhi {
+    font-family: 'Gurmukhi-Regular';
+}
+
+.logo {
+    color: $yellow;
+    background-color: $navy-blue;
+    border-radius: 50%;
+    box-shadow: 5px 5px 15px 0 rgba(0, 0, 0, 0.1);
+    width: 48px;
+    height: 48px;
+    text-align: center;
+    border: 2px solid #fff;
+    font-size: 30px;
+    line-height: 48px;
+}
+
+.heading {
+    font-family: 'Heading-Regular';
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: $navy-blue;
+}
+
+.auth-form {
+    background-color: $white;
+    padding: 64px;
+    border-radius: 30px;
+    text-align: center;
+    min-height: 640px;
+    max-width: 480px;
+    width: 80%;
+
+    @media screen and (max-width: $large) {
+        padding: 12px;
+        
+    }
+}
+
+.form-welcome-text {
+    font-family: 'Heading-Regular';
+    font-size: 2rem;
+    color: $navy-blue;
+    margin: 0;
+    font-weight: normal;
+}
+
+.form-welcome-tagline {
+    font-size: 1rem;
+    margin-top: 4px;
+    color: $dark-gray;
+}
+
+.form-options {
+    border-radius: 100px;
+    background-color: $light-gray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+    
+    button {
+        border-radius: 100px;
+        width: 100px;
+        height: 36px;
+        border: none;
+        color: $dark-gray;
+        background-color: transparent;
+        font-size: 0.9rem;
+
+        &.active {
+            background-color: $white;
+            color: $black;
+        }
+    }
+}
+
+.login-header {
+    position: absolute;
+}
+
+.display-pic {
+     border: 2px solid $white;
+     text-align: center;
+     line-height: 52px;
+     text-transform: uppercase;
+     background-color: $yellow;
+     color: $navy-blue;
+     display: inline-block;
+     z-index: 2;
+     overflow: hidden;
+
+     .image-input-label {
+        background-color: $black;
+        overflow: hidden;
+        position: absolute;
+        bottom: 0px;
+        width: inherit;
+     }
+}
+
+.profile-modal {
+    position: absolute;
+    right: 40px;
+    top: 50px;
+    text-align: center;
+    background: #fff;
+    border-radius: 32px;
+    padding: 32px;
+    max-width: 240px;
+    width: 100%;
+
+    box-shadow: 10px 10px 30px 0 rgba(0, 0, 0, 0.1);
+
+    .email {
+        font-size: 0.85rem;
+        color: $dark-gray;
+    }
+
+    .display-name {
+        font-size: 1.3rem;
+    }
+
+    input {
+        margin: 20px 0;
+        height: 36px;
+        border-radius: 14px;
+        border: 1px solid $dark-gray;
+        padding: 0 12px;
+    }
+
+    .no-profile-pic {
+        font-size: 3rem;
+        line-height: 132px;
+    }
+
+    .display-pic {
+        position: relative;
+    }
+}
